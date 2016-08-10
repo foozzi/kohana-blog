@@ -1,9 +1,15 @@
 <?php
 
-Route::set('blog', '/news')->defaults([
-  'directory' => 'blog',
-  'controller' => 'blog',
-  'action' => 'main'
-]);
+Route::set('news', 'news')
+  ->defaults(array(
+    'controller' => 'blog',
+    'action'     => 'index',
+  ));
+
+  Route::set('news_post', 'news/<id>-<slug>', array('id' => '[0-9]+', 'slug' => '.*'))
+    ->defaults(array(
+      'controller' => 'blog',
+      'action'     => 'show_post',
+    ));
 
 ?>

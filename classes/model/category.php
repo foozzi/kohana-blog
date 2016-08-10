@@ -5,7 +5,6 @@ class Model_Category extends ODM
 
   public $_schema = [
     '_id' => 'id',
-    'post_id' => 'int',
     'parent_id' => 'int',
     'title' => 'string',
   ];
@@ -25,7 +24,13 @@ class Model_Category extends ODM
 
   public function get($id)
   {
-    return $this->where('_id','=',  new MongoId($id))->find();
+    if(!$id)
+      return 0;
+    $cat = $this->where('_id','=',  new MongoId($id));
+
+    $catContent = $cat->find();
+
+    return $cat->loaded() ?  $catContent : 0;
   }
 
   public function add($data)
