@@ -17,13 +17,13 @@
 <?php foreach($posts as $post):?>
                       <tr class="table-row">
                           <td class="table-img">
-                             <img src="<?=$post->getThumbnail()?>" alt="" />
+                             <img src="/" alt="" />
                           </td>
                           <td class="table-text">
                             <h6><?=htmlspecialchars($post->title)?></h6>
                           </td>
                           <td>
-                          <a style="text-decoration:none" href="/admin/edit?id=<?=(isset($post->id) ? $post->id : 0)?>"><span class="fam">Ред.</span></a>
+                          <a style="text-decoration:none" href="/admin/edit?id=<?=(isset($post->id) ? $post->id : 0)?>"><span class="fam">Ред</span></a>
 													<a style="text-decoration:none" href="/admin/post_del?id=<?=(isset($post->id) ? $post->id : 0)?>"><span class="fam" style="background:red">Удал.</span></a>
                         </td>
 

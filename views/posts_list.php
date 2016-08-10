@@ -9,7 +9,7 @@
 
             			<div class="simple-news">
             				<div class="news-img">
-            						<a href="<?=ODM::factory('blog')->getLink($val)?>"><img src="./assets/img/general/news.jpg" alt=""></a>
+            						<a href="<?=ODM::factory('blog')->getLink($val)?>"><img src="<?=$val->getThumbNail()?>" alt=""></a>
             				</div>
             				<div class="news-head">
             					<a href="<?=ODM::factory('blog')->getLink($val)?>"><?=htmlspecialchars($val->title)?></a>

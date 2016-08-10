@@ -44,12 +44,6 @@ class Model_Blog extends ODM
   const THUMBNAIL_HEIGHT = 300;
 
 
-  public static function factory()
-  {
-    $this->cache = Cache::instance('memcache');
-    return 1;
-  }
-
   public function get($id)
   {
     return $this->where('id','=',  $id)->find();
@@ -61,7 +55,9 @@ class Model_Blog extends ODM
     if(!$this->loaded())
       return 0;
 
-    $cache = $this->cache->get('post_thumbnail_'. $this->id);
+    $this->cache = Cache::instance();
+
+    $cache = $this->cache->get('12post_thumbnail_'. $this->id);
 
     if($cache)
       return $cache;
@@ -75,13 +71,14 @@ class Model_Blog extends ODM
 
     $savePath = $this->getThumbnailFilePath();
 
-    $image = Image::factory($matches2)->resize(self::THUMBNAIL_WIDTH, self:THUMBNAIL_HEIGHT, Image::AUTO)
-      ->render('jpg')
-      ->save($savePath);
 
-     $cache->set('post_thumbnail_'. $this->id, $image, Date::HOUR * 72);
+    Image::factory(DOCROOT.$matches[2])
+      ->resize(self::THUMBNAIL_WIDTH, self::THUMBNAIL_HEIGHT, Image::AUTO)
+      ->save($savePath, 100, 'jpg');
 
-     return $image;
+     $this->cache->set('post_thumbnail_'. $this->id, str_replace(DOCROOT, '', $savePath), Date::HOUR * 72);
+
+     return str_replace(DOCROOT, '', $savePath);
   }
 
   public function getThumbnailFilePath()
