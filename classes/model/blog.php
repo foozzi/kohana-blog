@@ -4,6 +4,8 @@ class Model_Blog extends ODM
 {
   protected $_collection_name = 'posts';
 
+  private $cache;
+
   public $_schema = [
       'id' => 'int',
       'author_id' => 'int',
@@ -38,6 +40,15 @@ class Model_Blog extends ODM
 
   const SLUG_MAX_LENGTH = 60;
   const POST_DEFAULT_THUMBNAIL = '/images/toster1.png';
+  const THUMBNAIL_WIDTH = 500;
+  const THUMBNAIL_HEIGHT = 300;
+
+
+  public static function factory()
+  {
+    $this->cache = Cache::instance('memcache');
+    return 1;
+  }
 
   public function get($id)
   {
@@ -50,9 +61,32 @@ class Model_Blog extends ODM
     if(!$this->loaded())
       return 0;
 
+    $cache = $this->cache->get('post_thumbnail_'. $this->id);
+
+    if($cache)
+      return $cache;
+
     preg_match('/<img(.*)src\=\"([^"]+)\"/Us', $this->content, $matches);
 
-    return isset($matches[2]) ? $matches[2] : self::POST_DEFAULT_THUMBNAIL;
+
+    if(!isset($matches[2]))
+      return self::POST_DEFAULT_THUMBNAIL;
+
+
+    $savePath = $this->getThumbnailFilePath();
+
+    $image = Image::factory($matches2)->resize(self::THUMBNAIL_WIDTH, self:THUMBNAIL_HEIGHT, Image::AUTO)
+      ->render('jpg')
+      ->save($savePath);
+
+     $cache->set('post_thumbnail_'. $this->id, $image, Date::HOUR * 72);
+
+     return $image;
+  }
+
+  public function getThumbnailFilePath()
+  {
+    return MODPATH.'/blog/media/'. $this->id. '-thumbnail.jpg';
   }
 
 
