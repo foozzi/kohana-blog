@@ -19,13 +19,13 @@ class Controller_Admin extends Controller
 
   public function action_category_edit()
   {
-    $id = $this->request->query('id');
+    $id = HTML::chars($this->request->query('id'));
 
     $category = ODM::factory('category')->get($id);
 
     if($this->request->post('title'))
     {
-      $category->title = $this->request->post('title');
+      $category->title = HTML::chars($this->request->post('title'));
       $category->save();
     }
 
@@ -37,7 +37,7 @@ class Controller_Admin extends Controller
 
   public function action_category_del()
   {
-    $id = $this->request->query('id');
+    $id = HTML::chars($this->request->query('id'));
 
     $category = ODM::factory('category')->get($id);
 
@@ -51,7 +51,7 @@ class Controller_Admin extends Controller
 
   public function action_post_del()
   {
-    $id = $this->request->query('id');
+    $id = HTML::chars($this->request->query('id'));
 
     $post = ODM::factory('blog')->get($id);
 
@@ -71,7 +71,7 @@ class Controller_Admin extends Controller
       $category = ODM::factory('category');
 
       $category->add([
-        'title' => $this->request->post('title'),
+        'title' => HTML::chars($this->request->post('title')),
         'parent_id' => 0,
       ]);
       $this->redirect('/admin/category_edit?id='. $category->_id);
@@ -94,9 +94,9 @@ class Controller_Admin extends Controller
       $is_added = $post->add([
         'author_id' => 0,
         'category_id' => new MongoId($this->request->post('category')),
-        'title' =>  $this->request->post('title'),
-        'content' => $this->request->post('content'),
-        'short_content' =>  $this->request->post('content'),
+        'title' =>  HTML::chars($this->request->post('title')),
+        'content' => HTML::chars($this->request->post('content')),
+        'short_content' =>  HTML::chars($this->request->post('content')),
         'image' => 'http://toster.ru/img.jpeg',
         'date' =>  time(),
         'type' => 'post',
@@ -112,13 +112,13 @@ class Controller_Admin extends Controller
 
   public function action_edit()
   {
-    $id = $this->request->query('id');
+    $id = HTML::chars($this->request->query('id'));
     $post = ODM::factory('blog')->get($id);
 
     if($this->request->post('title'))
     {
-      $post->title = $this->request->post('title');
-      $post->content = $this->request->post('content');
+      $post->title = HTML::chars($this->request->post('title'));
+      $post->content = HTML::chars($this->request->post('content'));
       if(ODM::factory('category')->get($this->request->post('category')))
         $post->category_id = new MongoId($this->request->post('category'));
 
